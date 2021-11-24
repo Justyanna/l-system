@@ -18,9 +18,9 @@ function setup({ scene }) {
   sun.position.set(50, 100, 50);
   scene.add(sun);
 
-  let end = newBranch(scene);
-  newBranch(scene, end, 5, 1, 40, 0, 0);
-  newBranch(scene, end, 5, 1, 0, 0, 40);
+  let points = newBranch(scene, { x: 0, y: 0, z: 0 }, 12, 1, 40, 0, 0);
+  newBranch(scene, points.ending, 5, 1, 40, 0, 0);
+  newBranch(scene, points.ending, 5, 1, 0, 0, 40);
 
   const ground = new THREE.Mesh(
     new THREE.PlaneGeometry(150, 150),
@@ -50,22 +50,25 @@ function newBranch(
   branch.rotateY(radians(angleY));
   branch.rotateZ(radians(angleZ));
 
-  getAnchorPosition(branch, length);
+  translateToAnchor(scene, branch, length);
+  const ending = getPointFromElement(branch);
+  console.log(ending);
 
-  scene.add(branch);
+  translateToAnchor(scene, branch, -length / 2);
+  const anchor = getPointFromElement(branch);
+
+  return { anchor: anchor, ending: ending };
+}
+
+function translateToAnchor(scene, element, length) {
+  element.translateY(length);
+  scene.add(element);
   scene.updateMatrixWorld(true);
-
-  return getEndingPoint(branch, length);
 }
 
-function getAnchorPosition(element, length) {
-  element.translateY(length / 2);
-}
-
-function getEndingPoint(element, length) {
+function getPointFromElement(element) {
   var end = new THREE.Vector3();
   end.setFromMatrixPosition(element.matrixWorld);
-  end.y += length / 2;
   return end;
 }
 
