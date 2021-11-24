@@ -1,43 +1,74 @@
-import * as THREE from 'three'
-import App from './scripts/App'
+import * as THREE from "three";
+import App from "./scripts/App";
 
-let app
+let app;
 
-const barkMaterial = new THREE.MeshStandardMaterial({ color: 0x332211 })
-const grassTexture = new THREE.TextureLoader().load('img/grass-round.png')
+const barkMaterial = new THREE.MeshStandardMaterial({ color: 0x332211 });
+const grassTexture = new THREE.TextureLoader().load("img/grass-round.png");
 
-window.onload = init
+window.onload = init;
 
 function init() {
-  const c = document.querySelector('canvas')
-  app = new App(c, { grid: false, ambient: true, setup })
+  const c = document.querySelector("canvas");
+  app = new App(c, { grid: false, ambient: true, setup });
 }
 
 function setup({ scene }) {
-  const sun = new THREE.PointLight(0xededed)
-  sun.position.set(50, 100, 50)
-  scene.add(sun)
+  const sun = new THREE.PointLight(0xededed);
+  sun.position.set(50, 100, 50);
+  scene.add(sun);
 
-  let tree = newBranch(scene)
+  let end = newBranch(scene);
+  newBranch(scene, end, 5, 1, 40, 0, 0);
+  newBranch(scene, end, 5, 1, 0, 0, 40);
 
   const ground = new THREE.Mesh(
     new THREE.PlaneGeometry(150, 150),
     new THREE.MeshBasicMaterial({ map: grassTexture, transparent: true })
-  )
-  ground.rotateX(-Math.PI / 2)
-  scene.add(ground)
+  );
+  ground.rotateX(-Math.PI / 2);
+  scene.add(ground);
 }
 
-function newBranch(scene, x = 0, y = 0, z = 0, length = 12, width = 1) {
-  const branchModel = new THREE.CylinderGeometry(width, width, length, 100)
-  const branch = new THREE.Mesh(branchModel, barkMaterial)
-  branch.translateX(x)
-  branch.translateY(y + length / 2)
-  branch.translateZ(z)
-  scene.add(branch)
-  return branch
+function newBranch(
+  scene,
+  start = { x: 0, y: 0, z: 0 },
+  length = 12,
+  width = 1,
+  angleX = 0,
+  angleY = 0,
+  angleZ = 0
+) {
+  const branchModel = new THREE.CylinderGeometry(width, width, length, 100);
+  const branch = new THREE.Mesh(branchModel, barkMaterial);
+
+  branch.translateX(start.x);
+  branch.translateY(start.y);
+  branch.translateZ(start.z);
+
+  branch.rotateX(radians(angleX));
+  branch.rotateY(radians(angleY));
+  branch.rotateZ(radians(angleZ));
+
+  getAnchorPosition(branch, length);
+
+  scene.add(branch);
+  scene.updateMatrixWorld(true);
+
+  return getEndingPoint(branch, length);
 }
 
-// function angle(rad) {
-//   return (rad * Math.PI) / 180
-// }
+function getAnchorPosition(element, length) {
+  element.translateY(length / 2);
+}
+
+function getEndingPoint(element, length) {
+  var end = new THREE.Vector3();
+  end.setFromMatrixPosition(element.matrixWorld);
+  end.y += length / 2;
+  return end;
+}
+
+function radians(degrees) {
+  return (degrees * Math.PI) / 180;
+}
