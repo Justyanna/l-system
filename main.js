@@ -5,6 +5,10 @@ import buildTree from './scripts/Tree'
 let app
 let materials = null
 
+const global = {
+  scene: null
+}
+
 const grassTexture = new THREE.TextureLoader().load('img/grass-round.png')
 
 window.onload = init
@@ -20,7 +24,7 @@ function setup({ scene }) {
   sun.position.set(50, 100, 50)
   scene.add(sun)
 
-  buildTree(scene, 'X[AxBxCx]')
+  global.scene = scene
 
   const ground = new THREE.Mesh(
     new THREE.PlaneGeometry(150, 150),
@@ -51,6 +55,7 @@ function initUi() {
 
   document.getElementById('btn-start').addEventListener('click', () => {
     createMaterials()
+    addTree()
   })
 
   document
@@ -93,4 +98,9 @@ function createMaterials() {
 
 function rand(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min)
+}
+
+function addTree() {
+  const grammar = document.querySelector('.grammar-input').value
+  buildTree(global.scene, grammar)
 }
