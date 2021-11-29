@@ -19,8 +19,8 @@
     </div>
     <div class="ui-panel">
       <button class="button button-action" id="btn-start">Start</button>
-      <button class="button button-action">Step</button>
-      <button class="button button-error">Clear</button>
+      <button class="button button-action" id="btn-step">Step</button>
+      <button class="button button-error" id="btn-clear">Clear</button>
     </div>
     <div class="ui-panel">
       <button class="button" id="btn-options">Options</button>
@@ -60,6 +60,11 @@
     <div class="config-add">
       <button class="button" id="btn-add-row">Add node</button>
     </div>
+    <h3>Rules</h3>
+    <section class="config-rules"></section>
+    <div class="config-add">
+      <button class="button" id="btn-add-rule">Add rule</button>
+    </div>
   </div>
   <footer class="app">
     <p>
@@ -75,6 +80,14 @@
       <input type="number" min="0" max="359" class="node-angle node-y">
       <input type="number" min="0" max="120" class="node-angle node-x">
       <button class="button button-error node-delete">X</button>
+    </div>
+  </template>
+  <template id="rule-template">
+    <div class="rule">
+      <input type="text" class="rule-symbol">
+      <span>🠖</span>
+      <input type="text" class="rule-substitute">
+      <button class="button button-error role-delete">X</button>
     </div>
   </template>
   <script type="module" src="/main.js"></script>

@@ -224,3 +224,17 @@ footer.app > p {
   display: flex;
   justify-content: center;
 }
+
+.rule {
+  display: flex;
+  gap: 1em;
+}
+
+.rule + .rule {
+  margin-top: 0.25em;
+}
+
+.rule > input {
+  flex: 1;
+  text-align: center;
+}

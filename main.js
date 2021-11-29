@@ -4,7 +4,9 @@ import buildTree from './scripts/Tree'
 
 const global = {
   app: null,
+  grammar: null,
   materials: null,
+  rules: null,
   scene: null,
   symbols: null
 }
@@ -30,18 +32,37 @@ function initUi() {
   })
 
   document.getElementById('btn-start').addEventListener('click', () => {
-    clearScene()
+    global.grammar = document.querySelector('.grammar-input').value
+    createRules()
     createMaterials()
     createSymbols()
+    clearScene()
     addTree()
+  })
+
+  document.getElementById('btn-step').addEventListener('click', () => {
+    updateGrammar()
+    clearScene()
+    addTree()
+  })
+
+  document.getElementById('btn-clear').addEventListener('click', () => {
+    clearScene()
   })
 
   document
     .getElementById('btn-add-row')
     .addEventListener('click', () => addCustomNode())
+
   addCustomNode({ name: 'X', color: '#332211', direction: 30, bend: 0 })
   addCustomNode({ name: 'D', color: '#332211', direction: 70, bend: 60 })
   addCustomNode({ name: 'O', color: '#2a5c0f', direction: 70, bend: 60 })
+
+  document
+    .getElementById('btn-add-rule')
+    .addEventListener('click', () => addRule())
+
+  addRule('X', 'X[XDO]')
 }
 
 function addCustomNode({
@@ -65,6 +86,20 @@ function addCustomNode({
   document.querySelector('.config-nodes-custom').appendChild(row)
 }
 
+function addRule(symbol = '', substitute = '') {
+  const rule = document.querySelector('#rule-template').content.cloneNode(true)
+
+  rule.querySelector('.rule-symbol').value = symbol
+  rule.querySelector('.rule-substitute').value = substitute
+
+  rule.querySelector('button').addEventListener('click', ({ target }) => {
+    if (target.parentElement.parentElement.children.length < 2) return
+    target.parentElement.remove()
+  })
+
+  document.querySelector('.config-rules').appendChild(rule)
+}
+
 function createMaterials() {
   global.materials = {}
   document.querySelectorAll('.custom-node').forEach(node => {
@@ -83,7 +118,15 @@ function createSymbols() {
     const bend = parseInt(node.querySelector('.node-x').value)
     global.symbols[name] = { direction, bend }
   })
-  console.log(global.symbols)
+}
+
+function createRules() {
+  global.rules = {}
+  document.querySelectorAll('.rule').forEach(node => {
+    const rule = node.querySelector('.rule-symbol').value
+    const substitute = node.querySelector('.rule-substitute').value
+    global.rules[rule] = substitute
+  })
 }
 
 function rand(min, max) {
@@ -91,8 +134,7 @@ function rand(min, max) {
 }
 
 function addTree() {
-  const grammar = document.querySelector('.grammar-input').value
-  buildTree(global.scene, grammar, global.symbols, global.materials)
+  buildTree(global.scene, global.grammar, global.symbols, global.materials)
 }
 
 function clearScene() {
@@ -111,4 +153,11 @@ function clearScene() {
   )
   ground.rotateX(-Math.PI / 2)
   global.scene.add(ground)
+}
+
+function updateGrammar() {
+  global.grammar = global.grammar
+    .split('')
+    .map(symbol => (global.rules[symbol] ? global.rules[symbol] : symbol))
+    .join('')
 }
