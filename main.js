@@ -41,6 +41,7 @@ function initUi() {
     .addEventListener('click', () => addCustomNode())
   addCustomNode({ name: 'X', color: '#332211', direction: 30, bend: 0 })
   addCustomNode({ name: 'D', color: '#332211', direction: 70, bend: 60 })
+  addCustomNode({ name: 'O', color: '#2a5c0f', direction: 70, bend: 60 })
 }
 
 function addCustomNode({
