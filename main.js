@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import App from "./scripts/App";
-import Tree from "./scripts/Tree";
+import buildTree from "./scripts/Tree";
 
 let app;
 
@@ -18,8 +18,7 @@ function setup({ scene }) {
   sun.position.set(50, 100, 50);
   scene.add(sun);
 
-  let tree = new Tree(scene, 5, 45);
-  tree.generateTree();
+  buildTree(scene, "X[AxBxCx]");
 
   const ground = new THREE.Mesh(
     new THREE.PlaneGeometry(150, 150),
