@@ -3,23 +3,64 @@
 
 <head>
   <meta charset="UTF-8" />
-  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="icon" type="image/svg+xml" href="favicon.ico" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=PT+Sans+Caption&family=Yuji+Boku&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
-  <title>Vite App</title>
+  <title>L-system garden</title>
 </head>
 
 <body>
   <header class="app">
-    <h1 class="display">L-system garden in Three.js</h1>
+    <div class="ui-panel">
+      <input type="text" class="grammar-input" value="XD">
+    </div>
+    <div class="ui-panel">
+      <button class="button button-action" id="btn-start">Start</button>
+      <button class="button button-action">Step</button>
+      <button class="button button-error">Clear</button>
+    </div>
+    <div class="ui-panel">
+      <button class="button" id="btn-options">Options</button>
+    </div>
   </header>
   <main class="app">
-    <!-- <div class="ui"></div> -->
     <canvas></canvas>
   </main>
+  <div class="config config-visible">
+    <h2>Instructions</h2>
+    <section class="config-info"></section>
+    <h3>Built-in nodes</h3>
+    <section class="config-nodes-built-in">
+      <div class="node-built-in">
+        <strong>[</strong>
+        <span>Climb up a branch</span>
+      </div>
+      <div class="node-built-in">
+        <strong>]</strong>
+        <span>Climb down a branch</span>
+      </div>
+      <div class="node-built-in">
+        <strong>O</strong>
+        <span>End the last branch with leaves</span>
+      </div>
+    </section>
+    <h3>Custom nodes</h3>
+    <section class="config-nodes-custom">
+      <div>
+        <p class="config-heading">Name</p>
+        <p class="config-heading">Color</p>
+        <p class="config-heading" style="font-weight: 700;">⭮</p>
+        <p class="config-heading" style="font-weight: 700;">➘</p>
+        <p class="config-heading"></p>
+      </div>
+    </section>
+    <div class="config-add">
+      <button class="button" id="btn-add-row">Add node</button>
+    </div>
+  </div>
   <footer class="app">
     <p>
       <span>Abraham Kaczmarski</span>
@@ -27,6 +68,15 @@
       <span>Anna Justyna Kuczyńska</span>
     </p>
   </footer>
+  <template id="custom-node-row">
+    <div class="custom-node">
+      <input type="text" class="node-name">
+      <input type="color" class="node-color">
+      <input type="number" min="0" max="359" class="node-angle node-y">
+      <input type="number" min="0" max="120" class="node-angle node-x">
+      <button class="button button-error node-delete">X</button>
+    </div>
+  </template>
   <script type="module" src="/main.js"></script>
 </body>
 
