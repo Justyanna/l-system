@@ -92,7 +92,7 @@ class App {
     this.camera.position.setY(10)
     this.#controls = new OrbitControls(this.camera, this.canvas)
     this.#controls.minDistance = 30
-    this.#controls.maxDistance = 150
+    this.#controls.maxDistance = 200
     this.#controls.maxPolarAngle = Math.PI / 2.5
   }
 
