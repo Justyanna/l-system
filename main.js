@@ -62,7 +62,8 @@ function initUi() {
     .getElementById('btn-add-rule')
     .addEventListener('click', () => addRule())
 
-  addRule('X', 'X[XDO]')
+  addRule('X', 'X[DOXO]')
+  addRule('D', 'D[X[XO]]')
 }
 
 function addCustomNode({
