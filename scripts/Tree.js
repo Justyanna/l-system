@@ -3,7 +3,6 @@ import * as THREE from "three";
 const buildTree = (scene, grammar, definitions, materials) => {
   let width = 1;
   let length = 10;
-
   let stack = [];
   let lastBranch;
   stack.push({ position: { x: 0, y: 0, z: 0 }, direction: 0, bend: 0 });
@@ -30,8 +29,8 @@ const buildTree = (scene, grammar, definitions, materials) => {
           lastBranch = newBranch(
             scene,
             stack[stack.length - 1].position,
-            length,
-            width,
+            length * (1 / stack.length) ** (1 / 2),
+            width * (1 / stack.length) ** (1 / 2),
             material,
             stack[stack.length - 1].direction + settings.direction,
             stack[stack.length - 1].bend + settings.bend
@@ -75,7 +74,7 @@ const newBranch = (
 };
 
 const newSphere = (origin = { x: 0, y: 0, z: 0 }, material) => {
-  const geometry = new THREE.SphereGeometry(2.0, 32, 16);
+  const geometry = new THREE.SphereGeometry(3.5, 32, 16);
   const sphere = new THREE.Mesh(geometry, material);
   sphere.translateX(origin.x);
   sphere.translateY(origin.y);
