@@ -1,52 +1,18 @@
 import * as THREE from "three";
 
-const buildTree = (scene, grammar) => {
+const buildTree = (scene, grammar, definitions, materials) => {
   let width = 1;
   let length = 10;
-  let x1 = 20;
-  let y1 = 80;
-  let x2 = 80;
-  let y2 = 20;
 
   let stack = [];
   let lastBranch;
-  stack.push({ position: { x: 0, y: 0, z: 0 }, direction: 180, bend: 45 });
+  stack.push({ position: { x: 0, y: 0, z: 0 }, direction: 0, bend: 0 });
 
   for (const symbol of grammar) {
-    console.log(stack[stack.length - 1]);
+    const material = materials[symbol];
     switch (symbol) {
-      case "X":
-        lastBranch = newBranch(
-          scene,
-          stack[stack.length - 1].position,
-          length,
-          width,
-          stack[stack.length - 1].direction + 0,
-          stack[stack.length - 1].bend + 0
-        );
-        break;
-      case "A":
-        lastBranch = newBranch(
-          scene,
-          stack[stack.length - 1].position,
-          length,
-          width,
-          stack[stack.length - 1].direction + y1,
-          stack[stack.length - 1].bend + x1
-        );
-        break;
-      case "B":
-        lastBranch = newBranch(
-          scene,
-          stack[stack.length - 1].position,
-          length,
-          width,
-          stack[stack.length - 1].direction + y2,
-          stack[stack.length - 1].bend + x2
-        );
-        break;
-      case "x":
-        scene.add(newSphere(lastBranch.endPoint));
+      case "O":
+        scene.add(newSphere(lastBranch.endPoint, material));
         break;
       case "[":
         stack.push({
@@ -57,6 +23,21 @@ const buildTree = (scene, grammar) => {
         break;
       case "]":
         stack.pop();
+        break;
+      default:
+        const settings = definitions[symbol];
+        if (settings) {
+          lastBranch = newBranch(
+            scene,
+            stack[stack.length - 1].position,
+            length,
+            width,
+            material,
+            stack[stack.length - 1].direction + settings.direction,
+            stack[stack.length - 1].bend + settings.bend
+          );
+        }
+        break;
     }
   }
 };
@@ -66,12 +47,12 @@ const newBranch = (
   start = { x: 0, y: 0, z: 0 },
   length = 12,
   width = 1,
+  material,
   direction = 0,
   bend = 0
 ) => {
-  const barkMaterial = new THREE.MeshStandardMaterial({ color: 0x332211 });
   const branchModel = new THREE.CylinderGeometry(width, width, length, 100);
-  const branch = new THREE.Mesh(branchModel, barkMaterial);
+  const branch = new THREE.Mesh(branchModel, material);
 
   branch.translateX(start.x);
   branch.translateY(start.y);
@@ -93,9 +74,8 @@ const newBranch = (
   };
 };
 
-const newSphere = (origin = { x: 0, y: 0, z: 0 }) => {
+const newSphere = (origin = { x: 0, y: 0, z: 0 }, material) => {
   const geometry = new THREE.SphereGeometry(2.0, 32, 16);
-  const material = new THREE.MeshBasicMaterial({ color: 0x224d10 });
   const sphere = new THREE.Mesh(geometry, material);
   sphere.translateX(origin.x);
   sphere.translateY(origin.y);
