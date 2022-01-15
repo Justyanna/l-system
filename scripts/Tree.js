@@ -5,7 +5,8 @@ const buildTree = (scene, grammar, definitions, materials) => {
   let length = 10;
   let stack = [];
   let lastBranch;
-  stack.push({ position: { x: 0, y: 0, z: 0 }, direction: 0, bend: 0 });
+  const origin = { position: { x: 0, y: 0, z: 0 }, direction: 0, bend: 0 };
+  let current = origin;
 
   for (const symbol of grammar) {
     const material = materials[symbol];
@@ -15,29 +16,37 @@ const buildTree = (scene, grammar, definitions, materials) => {
         break;
       case "[":
         stack.push({
-          position: lastBranch.endPoint,
-          direction: lastBranch.direction,
-          bend: lastBranch.bend,
+          position: current.position,
+          direction: current.direction,
+          bend: current.bend,
         });
         break;
       case "]":
-        stack.pop();
+        current = stack.pop();
         break;
       default:
         const settings = definitions[symbol];
         if (settings) {
           lastBranch = newBranch(
             scene,
-            stack[stack.length - 1].position,
-            length * (1 / stack.length) ** (1 / 2),
-            width * (1 / stack.length) ** (1 / 2),
+            current.position,
+            length,
+            width,
             material,
-            stack[stack.length - 1].direction + settings.direction,
-            stack[stack.length - 1].bend + settings.bend
+            current.direction + settings.direction,
+            current.bend + settings.bend
           );
+          current = {
+            position: lastBranch.endPoint,
+            direction: lastBranch.direction,
+            bend: lastBranch.bend,
+          };
         }
         break;
     }
+
+    console.log("B " + THREE.Math.degToRad(current.bend));
+    console.log("D " + THREE.Math.degToRad(current.direction));
   }
 };
 
@@ -52,13 +61,24 @@ const newBranch = (
 ) => {
   const branchModel = new THREE.CylinderGeometry(width, width, length, 100);
   const branch = new THREE.Mesh(branchModel, material);
+  const axishelper = new THREE.AxesHelper(20);
+  branch.add(axishelper);
 
   branch.translateX(start.x);
   branch.translateY(start.y);
   branch.translateZ(start.z);
 
-  branch.rotateY(radians(direction));
-  branch.rotateX(radians(bend));
+  branch.rotation.order = "YXZ";
+
+  branch.rotation.y += THREE.Math.degToRad(direction);
+  branch.rotation.x += THREE.Math.degToRad(bend);
+
+  // branch.rotateY(THREE.Math.degToRad(direction));
+  // // branch.rotateX(THREE.Math.degToRad(bend));
+  // branch.rotateOnAxis(
+  //   new THREE.Vector3(1, 0, 0).cross(branch.rotation).normalize(),
+  //   THREE.Math.degToRad(bend)
+  // );
 
   translateToAnchor(scene, branch, length);
   const ending = getPointFromElement(branch);
