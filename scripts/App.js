@@ -134,30 +134,6 @@ class App {
     this.#update = settings.update
   }
 
-  test() {
-    const geometry = new THREE.TorusGeometry(10, 3, 16, 100)
-    const material = new THREE.MeshBasicMaterial({
-      color: 0xff6347,
-      wireframe: true
-    })
-    const torus = new THREE.Mesh(geometry, material)
-    this.scene.add(torus)
-  }
-
-  test2() {
-    const geometry = new THREE.TorusGeometry(10, 3, 16, 100)
-    const material = new THREE.MeshStandardMaterial({ color: 0xff6347 })
-    const torus = new THREE.Mesh(geometry, material)
-    this.scene.add(torus)
-
-    const ambientLight = new THREE.AmbientLight(0xededed)
-    this.scene.add(ambientLight)
-
-    const pointLight = new THREE.PointLight(0xededed)
-    pointLight.position.set(20, 5, 5)
-    this.scene.add(pointLight)
-  }
-
   #animate() {
     requestAnimationFrame(() => this.#animate())
     this.#update?.()
