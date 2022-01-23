@@ -2,13 +2,45 @@ import * as THREE from 'three'
 import App from './scripts/App'
 import buildTree from './scripts/Tree'
 
+const NODE_NAMES = [
+  'A',
+  'B',
+  'C',
+  'D',
+  'E',
+  'F',
+  'G',
+  'H',
+  'I',
+  'J',
+  'K',
+  'L',
+  'M',
+  'N',
+  'O',
+  'P',
+  'Q',
+  'R',
+  'S',
+  'T',
+  'U',
+  'V',
+  'W',
+  'X',
+  'Y',
+  'Z'
+]
+
+const NODE_TYPES = ['BRANCH', 'LEAVES']
+
 const global = {
   app: null,
   grammar: null,
   materials: null,
   rules: null,
   scene: null,
-  symbols: null
+  symbols: {},
+  nodes: null
 }
 
 const grassTexture = new THREE.TextureLoader().load('img/grass-round.png')
@@ -32,12 +64,11 @@ function initUi() {
   })
 
   document.getElementById('btn-start').addEventListener('click', () => {
-    global.grammar = document.querySelector('.grammar-input').value
-    createRules()
-    createMaterials()
-    createSymbols()
-    clearScene()
-    addTree()
+    // global.grammar = document.querySelector('.grammar-input').value
+    // updateRules()
+    // clearScene()
+    // addTree()
+    console.log(global.symbols)
   })
 
   document.getElementById('btn-step').addEventListener('click', () => {
@@ -54,9 +85,27 @@ function initUi() {
     .getElementById('btn-add-row')
     .addEventListener('click', () => addCustomNode())
 
-  addCustomNode({ name: 'X', color: '#332211', direction: 30, bend: 0 })
-  addCustomNode({ name: 'D', color: '#332211', direction: 70, bend: 60 })
-  addCustomNode({ name: 'O', color: '#2a5c0f', direction: 70, bend: 60 })
+  addCustomNode({
+    name: 'X',
+    type: 'BRANCH',
+    color: '#332211',
+    direction: 30,
+    bend: 0
+  })
+  addCustomNode({
+    name: 'D',
+    type: 'BRANCH',
+    color: '#332211',
+    direction: 70,
+    bend: 60
+  })
+  addCustomNode({
+    name: 'O',
+    type: 'LEAVES',
+    color: '#2a5c0f',
+    direction: 70,
+    bend: 60
+  })
 
   document
     .getElementById('btn-add-rule')
@@ -64,20 +113,88 @@ function initUi() {
 
   addRule('X', 'X[DOXO]')
   addRule('D', 'D[X[XO]]')
+
+  updateNameLists()
+  document.querySelector('.json').innerText = JSON.stringify(
+    Object.keys(global.symbols)
+  )
 }
 
 function addCustomNode({
   name = 'L',
+  type = 'BRANCH',
   color = '#6c6774',
   direction = rand(0, 12) * 30,
   bend = rand(0, 9) * 10
 } = {}) {
   const row = document.querySelector('#custom-node-row').content.cloneNode(true)
 
-  row.querySelector('.node-name').value = name
-  row.querySelector('.node-color').value = color
-  row.querySelector('.node-x').value = bend
-  row.querySelector('.node-y').value = direction
+  const nameList = row.querySelector('.node-name')
+  const typeList = row.querySelector('.node-type')
+  const colorSelect = row.querySelector('.node-color')
+  const bendInput = row.querySelector('.node-x')
+  const directionInput = row.querySelector('.node-y')
+
+  NODE_NAMES.forEach(key => {
+    const o = document.createElement('option')
+    o.value = key
+    o.innerHTML = key
+    o.classList.add(key)
+    nameList.appendChild(o)
+  })
+
+  NODE_TYPES.forEach(key => {
+    const o = document.createElement('option')
+    o.value = key
+    o.innerHTML = key
+    typeList.appendChild(o)
+  })
+
+  nameList.value = name
+  typeList.value = type
+  colorSelect.value = color
+  bendInput.value = bend
+  directionInput.value = direction
+
+  nameList.addEventListener('focus', e => {
+    nameList.setAttribute('data-prevValue', e.target.value)
+  })
+
+  nameList.addEventListener('change', e => {
+    const prev = e.target.getAttribute('data-prevValue')
+    const v = e.target.value
+    global.symbols[v] = global.symbols[prev]
+    delete global.symbols[prev]
+    nameList.setAttribute('data-prevValue', v)
+    nameList.parentElement.setAttribute('data-key', v)
+    updateNameLists()
+    document.querySelector('.json').innerText = JSON.stringify(
+      Object.keys(global.symbols)
+    )
+  })
+
+  typeList.addEventListener('change', e => {
+    const key = e.target.parentElement.getAttribute('data-key')
+    global.symbols[key].type = e.target.value
+  })
+
+  colorSelect.addEventListener('change', e => {
+    const key = e.target.parentElement.getAttribute('data-key')
+    global.symbols[key].material = materialFromColor(color)
+  })
+
+  bendInput.addEventListener('change', e => {
+    const key = e.target.parentElement.getAttribute('data-key')
+    global.symbols[key].bend = parseInt(e.target.value)
+  })
+
+  directionInput.addEventListener('change', e => {
+    const key = e.target.parentElement.getAttribute('data-key')
+    global.symbols[key].direction = parseInt(e.target.value)
+  })
+
+  addSymbol(name, direction, bend, type, color)
+  nameList.parentElement.setAttribute('data-key', name)
 
   row.querySelector('button').addEventListener('click', ({ target }) => {
     if (target.parentElement.parentElement.children.length < 3) return
@@ -85,6 +202,23 @@ function addCustomNode({
   })
 
   document.querySelector('.config-nodes-custom').appendChild(row)
+}
+
+const updateNameLists = () => {
+  // -- reset disabled
+  document.querySelectorAll('option[disabled]').forEach(option => {
+    option.disabled = false
+  })
+  // -- disable taken values
+  const lists = document.querySelectorAll('.node-name')
+  console.log(global.symbols)
+  Object.keys(global.symbols).forEach(key => {
+    lists.forEach(list => {
+      if (list.value !== key) {
+        list.querySelector(`.${key}`).disabled = true
+      }
+    })
+  })
 }
 
 function addRule(symbol = '', substitute = '') {
@@ -101,27 +235,16 @@ function addRule(symbol = '', substitute = '') {
   document.querySelector('.config-rules').appendChild(rule)
 }
 
-function createMaterials() {
-  global.materials = {}
-  document.querySelectorAll('.custom-node').forEach(node => {
-    const name = node.querySelector('.node-name').value
-    const colorHex = node.querySelector('.node-color').value
-    const color = parseInt(colorHex.substring(1), 16)
-    global.materials[name] = new THREE.MeshStandardMaterial({ color })
-  })
+function addSymbol(name, direction, bend, type, color) {
+  global.symbols[name] = {
+    direction,
+    bend,
+    type,
+    material: materialFromColor(color)
+  }
 }
 
-function createSymbols() {
-  global.symbols = {}
-  document.querySelectorAll('.custom-node').forEach(node => {
-    const name = node.querySelector('.node-name').value
-    const direction = parseInt(node.querySelector('.node-y').value)
-    const bend = parseInt(node.querySelector('.node-x').value)
-    global.symbols[name] = { direction, bend }
-  })
-}
-
-function createRules() {
+function updateRules() {
   global.rules = {}
   document.querySelectorAll('.rule').forEach(node => {
     const rule = node.querySelector('.rule-symbol').value
@@ -161,4 +284,8 @@ function updateGrammar() {
     .split('')
     .map(symbol => (global.rules[symbol] ? global.rules[symbol] : symbol))
     .join('')
+}
+
+function materialFromColor(color) {
+  return new THREE.MeshStandardMaterial({ color })
 }
