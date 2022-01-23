@@ -36,11 +36,9 @@ const NODE_TYPES = ['BRANCH', 'LEAVES']
 const global = {
   app: null,
   grammar: null,
-  materials: null,
   rules: null,
   scene: null,
-  symbols: {},
-  nodes: null
+  symbols: {}
 }
 
 const grassTexture = new THREE.TextureLoader().load('img/grass-round.png')
@@ -64,9 +62,9 @@ function initUi() {
   })
 
   document.getElementById('btn-start').addEventListener('click', () => {
-    // global.grammar = document.querySelector('.grammar-input').value
-    // updateRules()
-    // clearScene()
+    global.grammar = document.querySelector('.grammar-input').value
+    updateRules()
+    clearScene()
     // addTree()
     console.log(global.symbols)
   })
@@ -134,17 +132,19 @@ function initUi() {
 
   addRule('X', 'X[DOXO]')
   addRule('D', 'D[X[XO]]')
-
-  updateNameLists()
 }
 
 function addCustomNode({
-  name = 'L',
+  name,
   type = 'BRANCH',
   color = '#6c6774',
   direction = rand(0, 12) * 30,
   bend = rand(0, 9) * 10
 } = {}) {
+  if (!name) {
+    name = NODE_NAMES.filter(n => !global.symbols[n])[0]
+  }
+
   const row = document.querySelector('#custom-node-row').content.cloneNode(true)
 
   const nameList = row.querySelector('.node-name')
@@ -217,6 +217,7 @@ function addCustomNode({
   })
 
   document.querySelector('.config-nodes-custom').appendChild(row)
+  updateNameLists()
 }
 
 const updateNameLists = () => {
