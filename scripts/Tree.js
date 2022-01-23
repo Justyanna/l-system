@@ -1,11 +1,17 @@
 import * as THREE from "three";
 
-const buildTree = (scene, grammar, symbols) => {
-  let width = 1;
-  let length = 10;
+const buildTree = (scene, grammar, symbols, func) => {
+  let width = 3;
+  let length = 12;
   let stack = [];
   let lastBranch;
-  const origin = { position: { x: 0, y: 0, z: 0 }, direction: 0, bend: 0 };
+  let n = 1;
+  const origin = {
+    position: { x: 0, y: 0, z: 0 },
+    direction: 0,
+    bend: 0,
+    n: n,
+  };
   let current = origin;
 
   for (const symbol of grammar) {
@@ -15,20 +21,23 @@ const buildTree = (scene, grammar, symbols) => {
           position: current.position,
           direction: current.direction,
           bend: current.bend,
+          n: n,
         });
         break;
       case "]":
         current = stack.pop();
+        n = current.n;
         break;
       default:
         const settings = symbols[symbol];
         if (settings) {
           if (settings.type === "BRANCH") {
+            n++;
             lastBranch = newBranch(
               scene,
               current.position,
-              length,
-              width,
+              getSize(length, current.n, func),
+              getSize(width, current.n, func),
               settings.material,
               current.direction + settings.direction,
               current.bend + settings.bend
@@ -37,6 +46,7 @@ const buildTree = (scene, grammar, symbols) => {
               position: lastBranch.endPoint,
               direction: lastBranch.direction,
               bend: lastBranch.bend,
+              n: n,
             };
           } else if (settings.type === "LEAVES") {
             scene.add(newSphere(lastBranch.endPoint, settings.material));
@@ -44,9 +54,6 @@ const buildTree = (scene, grammar, symbols) => {
         }
         break;
     }
-
-    console.log("B " + THREE.Math.degToRad(current.bend));
-    console.log("D " + THREE.Math.degToRad(current.direction));
   }
 };
 
@@ -68,17 +75,17 @@ const newBranch = (
   branch.translateY(start.y);
   branch.translateZ(start.z);
 
-  // branch.rotation.order = "YXZ";
+  branch.rotation.order = "YXZ";
 
-  // branch.rotation.y += THREE.Math.degToRad(direction);
-  // branch.rotation.x += THREE.Math.degToRad(bend);
+  branch.rotation.y += THREE.Math.degToRad(direction);
+  branch.rotation.x += THREE.Math.degToRad(bend);
 
-  branch.rotateY(THREE.Math.degToRad(direction));
-  // branch.rotateX(THREE.Math.degToRad(bend));
-  branch.rotateOnAxis(
-    new THREE.Vector3(1, 0, 0).cross(branch.rotation).normalize(),
-    THREE.Math.degToRad(bend)
-  );
+  // branch.rotateY(THREE.Math.degToRad(direction));
+  // // branch.rotateX(THREE.Math.degToRad(bend));
+  // branch.rotateOnAxis(
+  //   new THREE.Vector3(1, 0, 0).cross(branch.rotation).normalize(),
+  //   THREE.Math.degToRad(bend)
+  // );
 
   translateToAnchor(scene, branch, length);
   const ending = getPointFromElement(branch);
@@ -167,8 +174,14 @@ const getPointFromElement = (element) => {
   return end;
 };
 
-const radians = (degrees) => {
-  return (degrees * Math.PI) / 180;
+const getSize = (value, n, type) => {
+  switch (type) {
+    case "none":
+      return value;
+    case "linear":
+      return (1 / n) * value;
+    case "log":
+      return value * (1 / n) ** (1 / 2);
+  }
 };
-
 export default buildTree;
