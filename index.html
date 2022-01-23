@@ -30,42 +30,52 @@
     <canvas></canvas>
   </main>
   <div class="config">
-    <h2>Instructions</h2>
-    <section class="config-info"></section>
-    <h3>Built-in nodes</h3>
-    <section class="config-nodes-built-in">
-      <div class="node-built-in">
+    <nav class="tab-select">
+      <button class="nav nav-active" id="nav-info">Instructions</button>
+      <button class="nav" id="nav-nodes">Nodes</button>
+      <button class="nav" id="nav-rules">Rules</button>
+      <button class="nav" id="nav-props">Properties</button>
+    </nav>
+    <section class="config-nodes-built-in tab tab-info tab-visible">
+      <h2>About</h2>
+      <p></p>
+      <p>
+        You can define new <strong>nodes</strong> by setting their color and rotation.
+        <strong>Rules</strong> define changes happening to the structure after each step.
+      </p>
+      <h2>Built-in nodes</h2>
+      <p class="node-built-in">
         <strong>[</strong>
-        <span>Climb up a branch</span>
-      </div>
-      <div class="node-built-in">
+        <span>Add current position to a list</span>
+      </p>
+      <p class="node-built-in">
         <strong>]</strong>
-        <span>Climb down a branch</span>
+        <span>Go back to last position on the list and remove it</span>
+      </p>
+    </section>
+    <section class="tab tab-nodes">
+      <h2>Custom nodes</h2>
+      <div class="config-nodes-custom">
+        <div>
+          <p class="config-heading">Symbol</p>
+          <p class="config-heading">Type</p>
+          <p class="config-heading">Color</p>
+          <p class="config-heading" style="font-weight: 700;">⭮</p>
+          <p class="config-heading" style="font-weight: 700;">➘</p>
+          <p class="config-heading"></p>
+        </div>
       </div>
-      <div class="node-built-in">
-        <strong>O</strong>
-        <span>End the last branch with leaves</span>
+      <div class="config-add">
+        <button class="button" id="btn-add-row">Add node</button>
       </div>
     </section>
-    <h3>Custom nodes</h3>
-    <section class="config-nodes-custom">
-      <div>
-        <p class="config-heading">Symbol</p>
-        <p class="config-heading">Type</p>
-        <p class="config-heading">Color</p>
-        <p class="config-heading" style="font-weight: 700;">⭮</p>
-        <p class="config-heading" style="font-weight: 700;">➘</p>
-        <p class="config-heading"></p>
+    <section class="tab tab-rules">
+      <h2>Rules</h2>
+      <div class="config-rules"></div>
+      <div class="config-add">
+        <button class="button" id="btn-add-rule">Add rule</button>
       </div>
     </section>
-    <div class="config-add">
-      <button class="button" id="btn-add-row">Add node</button>
-    </div>
-    <h3>Rules</h3>
-    <section class="config-rules"></section>
-    <div class="config-add">
-      <button class="button" id="btn-add-rule">Add rule</button>
-    </div>
     <p class="json"></p>
   </div>
   <footer class="app">

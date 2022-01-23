@@ -34,6 +34,14 @@ body {
   flex-direction: column;
 }
 
+h2 {
+  margin-block: 1em;
+}
+
+strong {
+  color: var(--c-theme-900);
+}
+
 /* # == TYPOGRAPHY == # */
 
 h1,
@@ -167,6 +175,37 @@ footer.app > p {
   transform: translateY(0);
 }
 
+.tab-select {
+  display: flex;
+  justify-content: space-around;
+}
+
+.nav {
+  padding-block: 0.5em;
+  padding-inline: 1.5em;
+  background-color: var(--c-theme-900);
+  color: var(--c-white);
+  font-family: var(--ff-text);
+  font-weight: 700;
+  border: none;
+  outline: none;
+  border-radius: 1em;
+  cursor: pointer;
+  transition: border-radius 200ms, color 200ms;
+}
+
+.nav:hover:not(.nav-active) {
+  background-color: var(--c-theme-700);
+  border-radius: 0.25em;
+}
+
+.nav-active {
+  background-color: transparent;
+  color: var(--c-black);
+  border-radius: 0.25em;
+  cursor: default;
+}
+
 .config > * + * {
   margin-top: 1rem;
 }
@@ -174,6 +213,10 @@ footer.app > p {
 .config input {
   border: none;
   border-radius: 0.25em;
+}
+
+.tab:not(.tab-visible) {
+  display: none;
 }
 
 .node-built-in {
@@ -215,6 +258,7 @@ footer.app > p {
 .config-add {
   display: flex;
   justify-content: center;
+  margin-block-start: 1em;
 }
 
 .rule {

@@ -81,6 +81,27 @@ function initUi() {
     clearScene()
   })
 
+  document.getElementById('nav-info').addEventListener('click', e => {
+    document.querySelector('.tab-visible').classList.remove('tab-visible')
+    document.querySelector('.tab-info').classList.add('tab-visible')
+    document.querySelector('.nav-active').classList.remove('nav-active')
+    e.target.classList.add('nav-active')
+  })
+
+  document.getElementById('nav-nodes').addEventListener('click', e => {
+    document.querySelector('.tab-visible').classList.remove('tab-visible')
+    document.querySelector('.tab-nodes').classList.add('tab-visible')
+    document.querySelector('.nav-active').classList.remove('nav-active')
+    e.target.classList.add('nav-active')
+  })
+
+  document.getElementById('nav-rules').addEventListener('click', e => {
+    document.querySelector('.tab-visible').classList.remove('tab-visible')
+    document.querySelector('.tab-rules').classList.add('tab-visible')
+    document.querySelector('.nav-active').classList.remove('nav-active')
+    e.target.classList.add('nav-active')
+  })
+
   document
     .getElementById('btn-add-row')
     .addEventListener('click', () => addCustomNode())
@@ -115,9 +136,6 @@ function initUi() {
   addRule('D', 'D[X[XO]]')
 
   updateNameLists()
-  document.querySelector('.json').innerText = JSON.stringify(
-    Object.keys(global.symbols)
-  )
 }
 
 function addCustomNode({
@@ -168,9 +186,6 @@ function addCustomNode({
     nameList.setAttribute('data-prevValue', v)
     nameList.parentElement.setAttribute('data-key', v)
     updateNameLists()
-    document.querySelector('.json').innerText = JSON.stringify(
-      Object.keys(global.symbols)
-    )
   })
 
   typeList.addEventListener('change', e => {
