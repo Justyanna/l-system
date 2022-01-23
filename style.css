@@ -34,6 +34,14 @@ body {
   flex-direction: column;
 }
 
+h2 {
+  margin-block: 1em;
+}
+
+strong {
+  color: var(--c-theme-900);
+}
+
 /* # == TYPOGRAPHY == # */
 
 h1,
@@ -157,7 +165,7 @@ footer.app > p {
   box-shadow: inset 0 0 2rem 2rem var(--c-theme-100);
   border: solid 0.25rem var(--c-theme-700);
   border-radius: 0.25rem;
-  transform: translateY(-100vh);
+  /* transform: translateY(-100vh); */
   transition: transform 350ms;
   z-index: 1;
   overflow-x: auto;
@@ -167,6 +175,37 @@ footer.app > p {
   transform: translateY(0);
 }
 
+.tab-select {
+  display: flex;
+  justify-content: space-around;
+}
+
+.nav {
+  padding-block: 0.5em;
+  padding-inline: 1.5em;
+  background-color: var(--c-theme-900);
+  color: var(--c-white);
+  font-family: var(--ff-text);
+  font-weight: 700;
+  border: none;
+  outline: none;
+  border-radius: 1em;
+  cursor: pointer;
+  transition: border-radius 200ms, color 200ms;
+}
+
+.nav:hover:not(.nav-active) {
+  background-color: var(--c-theme-700);
+  border-radius: 0.25em;
+}
+
+.nav-active {
+  background-color: transparent;
+  color: var(--c-black);
+  border-radius: 0.25em;
+  cursor: default;
+}
+
 .config > * + * {
   margin-top: 1rem;
 }
@@ -174,6 +213,10 @@ footer.app > p {
 .config input {
   border: none;
   border-radius: 0.25em;
+}
+
+.tab:not(.tab-visible) {
+  display: none;
 }
 
 .node-built-in {
@@ -188,8 +231,8 @@ footer.app > p {
 
 .config-nodes-custom {
   display: grid;
-  grid-template-columns: 1fr repeat(4, min-content);
-  gap: 0.75em 0;
+  grid-template-columns: repeat(6, auto);
+  gap: 0.75em 1em;
   text-align: center;
 }
 
@@ -197,32 +240,25 @@ footer.app > p {
   display: contents;
 }
 
-.config-heading {
-  padding: 0 0.5em;
-}
-
-.node-name {
-  padding: 0 0.5em;
-}
-
-.node-color {
-  margin: 0 1rem;
+.node-name,
+.node-type {
+  width: fit-content;
+  padding: 0.25em 0.5em;
+  margin: 0 auto;
 }
 
 .node-angle {
-  width: 4em;
-  padding: 0 0.5em;
+  text-align: center;
 }
 
 .node-delete {
-  width: min-content;
   padding: 0 1em;
-  margin-left: 1rem;
 }
 
 .config-add {
   display: flex;
   justify-content: center;
+  margin-block-start: 1em;
 }
 
 .rule {
