@@ -84,7 +84,21 @@
         <button class="button" id="btn-add-rule">Add rule</button>
       </div>
     </section>
-    <p class="json"></p>
+    <section class="tab tab-props">
+      <h2>Properties</h2>
+      <div class="text">
+        <p>Light intensity</p>
+        <input type="range" name="light" id="light" onchange="console.log(this.value)">
+      </div>
+      <div class="text">
+        <p>Easing function</p>
+        <select name="easing-funtcion" id="easing-funtcion">
+          <option value="none" selected>none</option>
+          <option value="linear" selected>linear</option>
+          <option value="log" selected>log</option>
+        </select>
+      </div>
+    </section>
   </div>
   <footer class="app">
     <p>

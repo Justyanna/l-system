@@ -64,7 +64,6 @@ function initUi() {
 
   document.getElementById('btn-start').addEventListener('click', () => {
     global.grammar = document.querySelector('.grammar-input').value
-    console.log(global.grammar)
     updateRules()
     clearScene()
     addTree()
@@ -101,23 +100,9 @@ function initUi() {
     e.target.classList.add('nav-active')
   })
 
-  document.getElementById('nav-info').addEventListener('click', e => {
+  document.getElementById('nav-props').addEventListener('click', e => {
     document.querySelector('.tab-visible').classList.remove('tab-visible')
-    document.querySelector('.tab-info').classList.add('tab-visible')
-    document.querySelector('.nav-active').classList.remove('nav-active')
-    e.target.classList.add('nav-active')
-  })
-
-  document.getElementById('nav-nodes').addEventListener('click', e => {
-    document.querySelector('.tab-visible').classList.remove('tab-visible')
-    document.querySelector('.tab-nodes').classList.add('tab-visible')
-    document.querySelector('.nav-active').classList.remove('nav-active')
-    e.target.classList.add('nav-active')
-  })
-
-  document.getElementById('nav-rules').addEventListener('click', e => {
-    document.querySelector('.tab-visible').classList.remove('tab-visible')
-    document.querySelector('.tab-rules').classList.add('tab-visible')
+    document.querySelector('.tab-props').classList.add('tab-visible')
     document.querySelector('.nav-active').classList.remove('nav-active')
     e.target.classList.add('nav-active')
   })
@@ -249,7 +234,6 @@ const updateNameLists = () => {
   })
   // -- disable taken values
   const lists = document.querySelectorAll('.node-name')
-  // console.log(global.symbols);
   Object.keys(global.symbols).forEach(key => {
     lists.forEach(list => {
       if (list.value !== key) {
@@ -259,7 +243,13 @@ const updateNameLists = () => {
   })
 }
 
-function addRule(symbol = '', substitute = '') {
+function addRule(symbol, substitute) {
+  if (!symbol) {
+    const s = Object.keys(global.symbols)[0]
+    symbol = s
+    substitute = `${s}${s}${s}`
+  }
+
   const rule = document.querySelector('#rule-template').content.cloneNode(true)
 
   rule.querySelector('.rule-symbol').value = symbol
@@ -296,8 +286,7 @@ function rand(min, max) {
 }
 
 function addTree() {
-  console.log(global.symbols)
-  buildTree(global.scene, global.symbols)
+  buildTree(global.scene, global.grammar, global.symbols)
 }
 
 function clearScene() {
