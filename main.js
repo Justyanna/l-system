@@ -33,37 +33,6 @@ const NODE_NAMES = [
 
 const NODE_TYPES = ['BRANCH', 'LEAVES']
 
-const NODE_NAMES = [
-  'A',
-  'B',
-  'C',
-  'D',
-  'E',
-  'F',
-  'G',
-  'H',
-  'I',
-  'J',
-  'K',
-  'L',
-  'M',
-  'N',
-  'O',
-  'P',
-  'Q',
-  'R',
-  'S',
-  'T',
-  'U',
-  'V',
-  'W',
-  'X',
-  'Y',
-  'Z'
-]
-
-const NODE_TYPES = ['BRANCH', 'LEAVES']
-
 const global = {
   app: null,
   grammar: null,
@@ -95,6 +64,7 @@ function initUi() {
 
   document.getElementById('btn-start').addEventListener('click', () => {
     global.grammar = document.querySelector('.grammar-input').value
+    console.log(global.grammar)
     updateRules()
     clearScene()
     addTree()
@@ -184,17 +154,19 @@ function initUi() {
 
   addRule('X', 'X[DOXO]')
   addRule('D', 'D[X[XO]]')
-
-  updateNameLists()
 }
 
 function addCustomNode({
-  name = 'L',
+  name,
   type = 'BRANCH',
   color = '#6c6774',
   direction = rand(0, 12) * 30,
   bend = rand(0, 9) * 10
 } = {}) {
+  if (!name) {
+    name = NODE_NAMES.filter(name => !global.symbols[name])[0]
+  }
+
   const row = document.querySelector('#custom-node-row').content.cloneNode(true)
 
   const nameList = row.querySelector('.node-name')
@@ -267,6 +239,7 @@ function addCustomNode({
   })
 
   document.querySelector('.config-nodes-custom').appendChild(row)
+  updateNameLists()
 }
 
 const updateNameLists = () => {
@@ -350,10 +323,6 @@ function updateGrammar() {
     .split('')
     .map(symbol => (global.rules[symbol] ? global.rules[symbol] : symbol))
     .join('')
-}
-
-function materialFromColor(color) {
-  return new THREE.MeshStandardMaterial({ color })
 }
 
 function materialFromColor(color) {
