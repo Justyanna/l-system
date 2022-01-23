@@ -250,6 +250,7 @@ const updateNameLists = () => {
     option.disabled = false;
   });
   // -- disable taken values
+
   const lists = document.querySelectorAll(".node-name");
   // console.log(global.symbols);
   Object.keys(global.symbols).forEach((key) => {
@@ -260,6 +261,7 @@ const updateNameLists = () => {
     });
   });
 };
+
 
 function addRule(symbol = "", substitute = "") {
   const rule = document.querySelector("#rule-template").content.cloneNode(true);
