@@ -63,6 +63,10 @@ h3,
   font-family: var(--ff-display);
 }
 
+.text + .text {
+  margin-top: 1em;
+}
+
 /* # == LAYOUT == # */
 
 header.app {
@@ -225,7 +229,7 @@ footer.app > p {
 }
 
 .node-built-in > *:first-child {
-  width: 2em;
+  width: 1em;
   text-align: center;
 }
 
