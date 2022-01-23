@@ -1,13 +1,13 @@
 import * as THREE from "three";
 
-const buildTree = (scene, symbols) => {
+const buildTree = (scene, grammar, symbols) => {
   let width = 1;
   let length = 10;
   let stack = [];
   let lastBranch;
   stack.push({ position: { x: 0, y: 0, z: 0 }, direction: 0, bend: 0 });
 
-  for (const symbol of Object.keys(symbols)) {
+  for (const symbol of grammar) {
     switch (symbol) {
       case "[":
         stack.push({
