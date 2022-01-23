@@ -65,6 +65,8 @@ class App {
    */
   width
 
+  light
+
   /**
    *
    * @param {HTMLCanvasElement} canvas
@@ -73,6 +75,7 @@ class App {
   constructor(canvas, settings) {
     this.canvas = canvas
     this.scene = new THREE.Scene()
+    this.light = 100
     this.#setUpScreen()
     this.#setUpRenderer()
     this.#setUpBase(settings)
@@ -103,7 +106,7 @@ class App {
     })
     this.renderer.setPixelRatio(window.devicePixelRatio)
     this.renderer.setSize(this.width, this.height)
-    this.renderer.setClearColor(0xededed, 1)
+    this.renderer.setClearColor(`hsl(0,0%,${this.light}%)`)
   }
 
   /**
@@ -119,12 +122,16 @@ class App {
     switch (typeof settings.ambient) {
       case 'boolean':
         if (settings.ambient) {
-          const ambientLight = new THREE.AmbientLight(0xededed)
+          const ambientLight = new THREE.AmbientLight()
+          ambientLight.color.setHSL(0, 0, this.light / 100)
+          ambientLight.name = 'ambient'
           this.scene.add(ambientLight)
         }
         break
       case 'number':
         const ambientLight = new THREE.AmbientLight(settings.ambient)
+        ambientLight.color.setHSL(0, 0, this.light / 100)
+        ambientLight.name = 'ambient'
         this.scene.add(ambientLight)
         break
       default:
@@ -138,6 +145,13 @@ class App {
     requestAnimationFrame(() => this.#animate())
     this.#update?.()
     this.renderer.render(this.scene, this.camera)
+  }
+
+  changeAmbientLight(x) {
+    this.light = x ?? 100
+    this.renderer.setClearColor(`hsl(0,0%,${x}%)`)
+    this.scene.getObjectByName('sun').color.setHSL(0, 0, x / 100)
+    this.scene.getObjectByName('ambient').color.setHSL(0, 0, x / 100)
   }
 }
 
