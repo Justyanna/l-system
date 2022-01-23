@@ -107,6 +107,14 @@ function initUi() {
     e.target.classList.add('nav-active')
   })
 
+  document.getElementById('function').addEventListener('change', e => {
+    console.log(e.target.value)
+  })
+
+  document.getElementById('light').addEventListener('change', e => {
+    console.log(e.target.value)
+  })
+
   document
     .getElementById('btn-add-row')
     .addEventListener('click', () => addCustomNode())
