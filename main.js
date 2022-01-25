@@ -35,6 +35,7 @@ const NODE_TYPES = ['BRANCH', 'LEAVES']
 
 const global = {
   app: null,
+  clear: true,
   grammar: null,
   rules: null,
   scene: null,
@@ -64,19 +65,28 @@ function initUi() {
 
   document.getElementById('btn-start').addEventListener('click', () => {
     global.grammar = document.querySelector('.grammar-input').value
-    console.log(global.grammar)
     updateRules()
     clearScene()
     addTree()
+    global.clear = false
   })
 
   document.getElementById('btn-step').addEventListener('click', () => {
-    updateGrammar()
-    clearScene()
-    addTree()
+    if (global.clear) {
+      global.grammar = document.querySelector('.grammar-input').value
+      updateRules()
+      clearScene()
+      addTree()
+      global.clear = false
+    } else {
+      updateGrammar()
+      clearScene()
+      addTree()
+    }
   })
 
   document.getElementById('btn-clear').addEventListener('click', () => {
+    global.clear = true
     clearScene()
   })
 
