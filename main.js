@@ -121,33 +121,41 @@ function initUi() {
     .addEventListener('click', () => addCustomNode())
 
   addCustomNode({
-    name: 'X',
+    name: 'A',
     type: 'BRANCH',
     color: '#332211',
-    direction: 30,
+    direction: 0,
     bend: 0
   })
   addCustomNode({
-    name: 'D',
+    name: 'B',
     type: 'BRANCH',
     color: '#332211',
-    direction: 70,
-    bend: 60
+    direction: 30,
+    bend: 20
   })
   addCustomNode({
-    name: 'O',
+    name: 'C',
+    type: 'BRANCH',
+    color: '#332211',
+    direction: 135,
+    bend: 10
+  })
+  addCustomNode({
+    name: 'X',
     type: 'LEAVES',
     color: '#2a5c0f',
-    direction: 70,
-    bend: 60
+    direction: 0,
+    bend: 0
   })
 
   document
     .getElementById('btn-add-rule')
     .addEventListener('click', () => addRule())
 
-  addRule('X', 'X[DOXO]')
-  addRule('D', 'D[X[XO]]')
+  addRule('X', '[BX][CX]')
+  addRule('B', 'BA')
+  addRule('C', 'CA')
 }
 
 function addCustomNode({
@@ -292,7 +300,18 @@ function rand(min, max) {
 
 function addTree() {
   const f = document.getElementById('function').value
-  buildTree(global.scene, global.grammar, global.symbols, f)
+  const s = document.getElementById('size').value
+  const p = document.getElementById('proportions').value
+  const leaves = document.getElementById('foliage').value
+  buildTree(
+    global.scene,
+    global.grammar,
+    global.symbols,
+    f,
+    s,
+    s * p,
+    s * leaves
+  )
 }
 
 function clearScene() {
